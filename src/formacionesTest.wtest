@@ -1,0 +1,149 @@
+import vagones.*
+import formaciones.*
+import locomotoras.*
+import depositos.*
+
+test "Etapa1" {
+
+	const pas1 = new VagonDePasajeros(largo = 10, ancho = 4, estaOrdenado = true, tieneBanio = true)
+	const pas2 = new VagonDePasajeros(largo = 7, ancho = 2, estaOrdenado = false, tieneBanio = false)
+	const car1 = new VagonDeCarga(cargaMaximaIdeal = 6800, maderasSueltas = 5)
+	const dor1 = new VagonDormitorio(compartimientos = 8, camasPorCompartimiento = 3)
+	
+	assert.equals(100, pas1.cantidadDePasajeros())
+	assert.equals(41, pas2.cantidadDePasajeros())
+	assert.equals(0, car1.cantidadDePasajeros())
+	assert.equals(24, dor1.cantidadDePasajeros())
+	
+	assert.equals(10300, pas1.pesoMaximo())
+	assert.equals(6080, pas2.pesoMaximo())
+	assert.equals(6300, car1.pesoMaximo())
+	assert.equals(7120, dor1.pesoMaximo())
+	
+	assert.equals(300, pas1.cargaMaxima())
+	assert.equals(800, pas2.cargaMaxima())
+	assert.equals(4800, car1.cargaMaxima())
+	assert.equals(1200, dor1.cargaMaxima())
+	
+	assert.that(pas1.tieneBanio())
+	assert.notThat(pas2.tieneBanio())
+	assert.notThat(car1.tieneBanio())
+	assert.that(dor1.tieneBanio())
+	
+	const for1 = new Formacion()
+	for1.agregar(pas1)
+	for1.agregar(pas2)
+	for1.agregar(car1)
+	for1.agregar(dor1)
+	
+	assert.equals(165, for1.cuantosPasajerosPuedeLlevar())
+	assert.equals(1, for1.cantidadDeVagonesPopulares())
+	assert.notThat(for1.esCarguera())
+	assert.equals(4220, for1.dispersionDePesos())
+	assert.equals(2, for1.cantidadDeBanios())
+	
+	for1.realizarMantenimiento()
+	
+	assert.equals(180, for1.cuantosPasajerosPuedeLlevar())
+	assert.equals(2, for1.cantidadDeVagonesPopulares())
+	assert.notThat(for1.esCarguera())
+	assert.equals(3200, for1.dispersionDePesos())
+	assert.equals(2, for1.cantidadDeBanios())
+	
+	const car2 = new VagonDeCarga(cargaMaximaIdeal = 8000, maderasSueltas = 1)
+	const dor2 = new VagonDormitorio(compartimientos = 15, camasPorCompartimiento = 4)
+	const for2 = new Formacion()
+	for2.agregar(car2)
+	for2.agregar(dor2)
+	
+	assert.equals(60, for2.cuantosPasajerosPuedeLlevar())
+	assert.equals(1, for2.cantidadDeVagonesPopulares())
+	assert.that(for2.esCarguera())
+	assert.equals(900, for2.dispersionDePesos())
+	assert.equals(1, for2.cantidadDeBanios())
+	
+	for2.realizarMantenimiento()
+	
+	assert.equals(60, for2.cuantosPasajerosPuedeLlevar())
+	assert.equals(1, for2.cantidadDeVagonesPopulares())
+	assert.that(for2.esCarguera())
+	assert.equals(500, for2.dispersionDePesos())
+	assert.equals(1, for2.cantidadDeBanios())
+	
+	assert.notThat(for1.estaOrganizada())
+	assert.notThat(for2.estaOrganizada())
+
+}
+
+test "Etapa2" {
+	
+	const pas1 = new VagonDePasajeros(largo = 10, ancho = 4, estaOrdenado = true, tieneBanio = true)
+	const pas2 = new VagonDePasajeros(largo = 7, ancho = 2, estaOrdenado = false, tieneBanio = false)
+	const car1 = new VagonDeCarga(cargaMaximaIdeal = 6800, maderasSueltas = 5)
+	const dor1 = new VagonDormitorio(compartimientos = 8, camasPorCompartimiento = 3)
+	const for1 = new Formacion()
+	for1.agregar(pas1)
+	for1.agregar(pas2)
+	for1.agregar(car1)
+	for1.agregar(dor1)
+	const loc1 = new Locomotora(peso = 3000, capacidadDeArrastre = 20000, velocidadMaxima = 60)
+	const loc2 = new Locomotora(peso = 5000, capacidadDeArrastre = 22000, velocidadMaxima = 60)
+	for1.agregarA(loc1)
+	
+	assert.that(for1.esEficiente())
+	assert.notThat(for1.puedeMoverse())
+	assert.equals(12800, for1.kilosDeEmpujeFaltantesParaMoverse())
+	
+	for1.agregarA(loc2)
+	
+	assert.notThat(for1.esEficiente())
+	assert.that(for1.puedeMoverse())
+	assert.equals(0, for1.kilosDeEmpujeFaltantesParaMoverse())
+	
+}
+
+test "Etapa 3"{
+	
+	const pas1 = new VagonDePasajeros(largo = 10, ancho = 4, estaOrdenado = true, tieneBanio = true)
+	const pas2 = new VagonDePasajeros(largo = 7, ancho = 2, estaOrdenado = false, tieneBanio = false)
+	const car1 = new VagonDeCarga(cargaMaximaIdeal = 6800, maderasSueltas = 5)
+	const dor1 = new VagonDormitorio(compartimientos = 8, camasPorCompartimiento = 3)
+	const for1 = new Formacion()
+	for1.agregar(pas1)
+	for1.agregar(pas2)
+	for1.agregar(car1)
+	for1.agregar(dor1)
+	const loc1 = new Locomotora(peso = 3000, capacidadDeArrastre = 20000, velocidadMaxima = 60)
+	const loc2 = new Locomotora(peso = 5000, capacidadDeArrastre = 22000, velocidadMaxima = 60)
+	for1.agregarA(loc1)
+	for1.agregarA(loc2)
+	
+	const car2 = new VagonDeCarga(cargaMaximaIdeal = 8000, maderasSueltas = 1)
+	const dor2 = new VagonDormitorio(compartimientos = 15, camasPorCompartimiento = 4)
+	const for2 = new Formacion()
+	for2.agregar(car2)
+	for2.agregar(dor2)
+	const loc3 = new Locomotora(peso = 3000, capacidadDeArrastre = 5000, velocidadMaxima = 60)
+	for2.agregarA(loc3)
+	
+	const loc4 = new Locomotora(peso = 3000, capacidadDeArrastre = 17100, velocidadMaxima = 60)
+	const dep1 = new DepositoFerroviario()
+	dep1.agregar(for1)
+	dep1.agregar(for2)
+	dep1.agregarA(loc4)
+	
+	assert.equals([pas1, dor2], dep1.vagonesMasPesados())
+	assert.that(dep1.necesitaConductorExperimentado())
+	assert.equals([loc1, loc2], for1.locomotoras())
+	assert.equals([loc3], for2.locomotoras())
+	dep1.agregarLocomotoraA(for1)
+	dep1.agregarLocomotoraA(for2)
+	assert.equals([loc1, loc2], for1.locomotoras())
+	assert.equals([loc3, loc4], for2.locomotoras())
+}
+
+
+
+
+
+
